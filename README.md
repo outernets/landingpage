@@ -1,13 +1,10 @@
-threejs-es6-boilerplate
+The Outernets landing page app
 ===
-
-Simple THREE.js Application boilerplate to use with ES6.
-
-> This project structure was generated through
-> [modern-frontend](https://github.com/endel/generator-modern-frontend)
-> [Yeoman](https://github.com/yeoman/yo)'s generator.
-
-License
----
-
-MIT
+to install run 
+```
+npm i
+```
+to run:
+```
+npm start
+```
