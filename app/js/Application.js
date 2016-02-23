@@ -1,5 +1,10 @@
 var WIDTH = window.innerWidth
   , HEIGHT = window.innerHeight
+  , ASPECT = WIDTH / HEIGHT
+  , VIEW_ANGLE = 45
+  , NEAR = 1
+  , FAR = 100000
+  , FRUSTUM_SIZE = 600
 
 export default class Application {
 
@@ -7,14 +12,16 @@ export default class Application {
     var self = this;
     this.container = container;
 
-    this.camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 1, 5000);
+    this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     //this.camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0, 0);
-    this.camera.position.set(0, 0, 180);
+    // this.camera.position.set(0, 0, 180);
+    this.camera.position.z = WIDTH/2;
 
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
     })
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(WIDTH, HEIGHT);
     this.container.appendChild(this.renderer.domElement);
 
@@ -23,19 +30,20 @@ export default class Application {
     var light = new THREE.AmbientLight(0xff0000);
     this.scene.add(light);
 
-
     var materials = [];
     for(var i = 0; i < 6; i++) {
       materials.push(new THREE.MeshBasicMaterial({
           map : textures[i],
-          side: THREE.DoubleSide,
+          // side: THREE.DoubleSide,
+          side: THREE.FrontSide
       }));
     }
 
     var geometry = new THREE.BoxGeometry(WIDTH, WIDTH, WIDTH);
 
-
     this.mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+    this.mesh.scale.z = -1
+
     this.scene.add(self.mesh);
 
     console.log('MESH = ', this.mesh);
@@ -62,34 +70,42 @@ export default class Application {
       switch (e.keyCode) {
         case 37:
           console.log('onkeydown: left');
+          var destVal = self.mesh.rotation.y - Math.PI/2
           createjs.Tween.get(self.mesh.rotation)
-            .wait(200)
-            .to({y: "-" + Math.PI/2}, 300)
+            // .wait(200)
+            // .to({y: "-" + Math.PI/2}, 300)
+            .to({y: destVal}, 100)
             .call(function(){
 
             });
           break;
         case 38:
           console.log('onkeydown: up');
+          destVal = self.mesh.rotation.x + Math.PI/2
           createjs.Tween.get(self.mesh.rotation)
-            .wait(200)
-            .to({x: "-" + Math.PI/2}, 300)
+            // .wait(200)
+            // .to({x: "-" + Math.PI/2}, 300)
+            .to({x: destVal}, 100)
             .call(function(){});
           break;
         case 39:
-          console.log('onkeydown: right createjs = ', createjs);
+          console.log('onkeydown: right');
+          destVal = self.mesh.rotation.y + Math.PI/2
           createjs.Tween.get(self.mesh.rotation)
-            .wait(200)
-            .to({y: "+" + Math.PI/2}, 300)
+            // .wait(200)
+            // .to({y: "+" + Math.PI/2}, 300)
+            .to({y: destVal}, 100)
             .call(function(){
 
             });
           break;
         case 40:
           console.log('onkeydown: down');
+          destVal = self.mesh.rotation.x - Math.PI/2
           createjs.Tween.get(self.mesh.rotation)
-            .wait(200)
-            .to({x: "+" + Math.PI/2}, 300)
+            // .wait(200)
+            // .to({x: "+" + Math.PI/2}, 300)
+            .to({x: destVal}, 100)
             .call(function(){
 
             });
