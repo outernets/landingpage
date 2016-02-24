@@ -1,7 +1,7 @@
 var WIDTH = window.innerWidth
   , HEIGHT = window.innerHeight
   , ASPECT = WIDTH / HEIGHT
-  , VIEW_ANGLE = 45
+  , VIEW_ANGLE = 85
   , NEAR = 1
   , FAR = 100000
   , FRUSTUM_SIZE = 600
@@ -15,7 +15,7 @@ export default class Application {
     this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     //this.camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0, 0);
     // this.camera.position.set(0, 0, 180);
-    this.camera.position.z = WIDTH/2;
+    // this.camera.position.z = WIDTH/2;
 
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -70,8 +70,9 @@ export default class Application {
       switch (e.keyCode) {
         case 37:
           console.log('onkeydown: left');
-          var destVal = self.mesh.rotation.y - Math.PI/2
-          createjs.Tween.get(self.mesh.rotation)
+          // var destVal = self.mesh.rotation.y - Math.PI/2
+          var destVal = self.camera.rotation.y + Math.PI/2
+          createjs.Tween.get(self.camera.rotation)
             // .wait(200)
             // .to({y: "-" + Math.PI/2}, 300)
             .to({y: destVal}, 100)
@@ -81,8 +82,8 @@ export default class Application {
           break;
         case 38:
           console.log('onkeydown: up');
-          destVal = self.mesh.rotation.x + Math.PI/2
-          createjs.Tween.get(self.mesh.rotation)
+          destVal = self.camera.rotation.x - Math.PI/2
+          createjs.Tween.get(self.camera.rotation)
             // .wait(200)
             // .to({x: "-" + Math.PI/2}, 300)
             .to({x: destVal}, 100)
@@ -90,8 +91,8 @@ export default class Application {
           break;
         case 39:
           console.log('onkeydown: right');
-          destVal = self.mesh.rotation.y + Math.PI/2
-          createjs.Tween.get(self.mesh.rotation)
+          destVal = self.camera.rotation.y - Math.PI/2
+          createjs.Tween.get(self.camera.rotation)
             // .wait(200)
             // .to({y: "+" + Math.PI/2}, 300)
             .to({y: destVal}, 100)
@@ -101,8 +102,8 @@ export default class Application {
           break;
         case 40:
           console.log('onkeydown: down');
-          destVal = self.mesh.rotation.x - Math.PI/2
-          createjs.Tween.get(self.mesh.rotation)
+          destVal = self.camera.rotation.x + Math.PI/2
+          createjs.Tween.get(self.camera.rotation)
             // .wait(200)
             // .to({x: "+" + Math.PI/2}, 300)
             .to({x: destVal}, 100)
