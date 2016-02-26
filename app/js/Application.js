@@ -1,10 +1,10 @@
 var WIDTH = window.innerWidth
   , HEIGHT = window.innerHeight
   , ASPECT = WIDTH / HEIGHT
-  , VIEW_ANGLE = 85
+  , VIEW_ANGLE = 65
   , NEAR = 1
   , FAR = 100000
-  , FRUSTUM_SIZE = 600
+  // , FRUSTUM_SIZE = 600
 
 export default class Application {
 
@@ -12,20 +12,22 @@ export default class Application {
     var self = this;
     this.container = container;
 
-    this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-    //this.camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0, 0);
-    // this.camera.position.set(0, 0, 180);
-    // this.camera.position.z = WIDTH/2;
+    this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR)
+    this.cameraRig = new THREE.Object3D()
+    this.cameraRig.add(this.camera)
+    // this.cameraRig.rotation.order = 'YXZ'
+    // this.cameraRig.eulerOrder = 'YXZ'
 
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
-    })
+    });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(WIDTH, HEIGHT);
     this.container.appendChild(this.renderer.domElement);
 
     this.scene = new THREE.Scene();
+    this.scene.add(this.cameraRig)
 
     var light = new THREE.AmbientLight(0xff0000);
     this.scene.add(light);
@@ -33,9 +35,8 @@ export default class Application {
     var materials = [];
     for(var i = 0; i < 6; i++) {
       materials.push(new THREE.MeshBasicMaterial({
-          map : textures[i],
-          // side: THREE.DoubleSide,
-          side: THREE.FrontSide
+          map : textures[i]
+          , side: THREE.FrontSide
       }));
     }
 
@@ -51,8 +52,6 @@ export default class Application {
 
     window.addEventListener('resize', this.onResize.bind(this));
 
-    //todo: after each rotation replace all face images but the one that is currently in front of the camera
-
     // map for cube faces relative to initial face
     //mesh.material.materials[0] -> right from facing front
     //mesh.material.materials[1] -> left from facing front
@@ -66,50 +65,47 @@ export default class Application {
     //  map : textures[textures.length - 1], // texture from some image
     //  side: THREE.DoubleSide,
     //});
+
+    var destVal = 0;
     document.onkeydown = function(e) {
       switch (e.keyCode) {
         case 37:
           console.log('onkeydown: left');
-          // var destVal = self.mesh.rotation.y - Math.PI/2
-          var destVal = self.camera.rotation.y + Math.PI/2
-          createjs.Tween.get(self.camera.rotation)
-            // .wait(200)
-            // .to({y: "-" + Math.PI/2}, 300)
-            .to({y: destVal}, 100)
-            .call(function(){
-
-            });
+          destVal = self.cameraRig.rotation.z + Math.PI / 2
+          createjs.Tween.get(self.cameraRig.rotation)
+          .to({z: destVal}, 100)
+          .call(function(){
+            console.log('rig rotation y: ', self.cameraRig.rotation.y)
+            console.log('camera rotation y: ', self.camera.rotation.y)
+          });
           break;
         case 38:
           console.log('onkeydown: up');
-          destVal = self.camera.rotation.x - Math.PI/2
+          destVal = self.camera.rotation.x + Math.PI / 2
           createjs.Tween.get(self.camera.rotation)
-            // .wait(200)
-            // .to({x: "-" + Math.PI/2}, 300)
-            .to({x: destVal}, 100)
-            .call(function(){});
+          .to({x: destVal}, 100)
+          .call(function(){
+            console.log('rig rotation x: ', self.cameraRig.rotation.x)
+            console.log('camera rotation x: ', self.camera.rotation.x)
+          });
           break;
         case 39:
           console.log('onkeydown: right');
-          destVal = self.camera.rotation.y - Math.PI/2
-          createjs.Tween.get(self.camera.rotation)
-            // .wait(200)
-            // .to({y: "+" + Math.PI/2}, 300)
-            .to({y: destVal}, 100)
-            .call(function(){
+          destVal = self.cameraRig.rotation.z - Math.PI/2
+          createjs.Tween.get(self.cameraRig.rotation)
+          .to({z: destVal}, 100)
+          .call(function(){
 
-            });
+          });
           break;
         case 40:
           console.log('onkeydown: down');
-          destVal = self.camera.rotation.x + Math.PI/2
+          destVal = self.camera.rotation.x - Math.PI/2
           createjs.Tween.get(self.camera.rotation)
-            // .wait(200)
-            // .to({x: "+" + Math.PI/2}, 300)
-            .to({x: destVal}, 100)
-            .call(function(){
+          .to({x: destVal}, 100)
+          .call(function(){
 
-            });
+          });
           break;
       }
     };
